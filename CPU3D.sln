@@ -1,0 +1,20 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "CPU3D", "CPU3D.vcxproj", "{7A37B4D3-960F-4BB5-B437-06547A2A7F43}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Win32 = Debug|Win32
+		Release|Win32 = Release|Win32
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7A37B4D3-960F-4BB5-B437-06547A2A7F43}.Debug|Win32.ActiveCfg = Debug|Win32
+		{7A37B4D3-960F-4BB5-B437-06547A2A7F43}.Debug|Win32.Build.0 = Debug|Win32
+		{7A37B4D3-960F-4BB5-B437-06547A2A7F43}.Release|Win32.ActiveCfg = Release|Win32
+		{7A37B4D3-960F-4BB5-B437-06547A2A7F43}.Release|Win32.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
