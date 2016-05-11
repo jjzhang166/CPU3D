@@ -10,6 +10,19 @@
       <Platform>Win32</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\cpu3d\c3dFrame.cpp" />
+    <ClCompile Include="src\cpu3d\c3dRender.cpp" />
+    <ClCompile Include="src\cpu3d\glmTest.cpp" />
+    <ClCompile Include="src\glmTest.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="c3d.h" />
+    <ClInclude Include="src\c3dRender.h" />
+    <ClInclude Include="src\cpu3d\c3dFrame.h" />
+    <ClInclude Include="src\cpu3d\c3dRender.h" />
+    <ClInclude Include="src\cpu3d\IRender.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{7A37B4D3-960F-4BB5-B437-06547A2A7F43}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -43,9 +56,11 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
+    <IntDir>临时输出目录\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <IntDir>bin\obj\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -77,9 +92,6 @@
       <OptimizeReferences>true</OptimizeReferences>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClCompile Include="main.cpp" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
