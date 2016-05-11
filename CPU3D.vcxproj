@@ -17,8 +17,8 @@
     <ClCompile Include="src\glmTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="c3d.h" />
     <ClInclude Include="src\c3dRender.h" />
+    <ClInclude Include="src\cpu3d\c3d.h" />
     <ClInclude Include="src\cpu3d\c3dFrame.h" />
     <ClInclude Include="src\cpu3d\c3dRender.h" />
     <ClInclude Include="src\cpu3d\IRender.h" />

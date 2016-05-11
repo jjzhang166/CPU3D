@@ -38,7 +38,7 @@
     <ClInclude Include="src\cpu3d\IRender.h">
       <Filter>CPU3D</Filter>
     </ClInclude>
-    <ClInclude Include="c3d.h">
+    <ClInclude Include="src\cpu3d\c3d.h">
       <Filter>CPU3D</Filter>
     </ClInclude>
   </ItemGroup>
