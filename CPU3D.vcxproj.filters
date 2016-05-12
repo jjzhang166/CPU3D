@@ -26,9 +26,11 @@
     <ClCompile Include="src\cpu3d\glmTest.cpp">
       <Filter>CPU3D</Filter>
     </ClCompile>
+    <ClCompile Include="src\cpu3d\c3dCameara.cpp">
+      <Filter>CPU3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\c3dRender.h" />
     <ClInclude Include="src\cpu3d\c3dFrame.h">
       <Filter>CPU3D</Filter>
     </ClInclude>
@@ -39,6 +41,9 @@
       <Filter>CPU3D</Filter>
     </ClInclude>
     <ClInclude Include="src\cpu3d\c3d.h">
+      <Filter>CPU3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu3d\c3dCameara.h">
       <Filter>CPU3D</Filter>
     </ClInclude>
   </ItemGroup>

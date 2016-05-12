@@ -10,8 +10,6 @@ public:
 	vec3 upDir;	//头部方向
 
 	float ration;	//宽高比
-	float near,far;	//近景 远    景
-
-
+	float near,far;	//近景 远   景
 };
 

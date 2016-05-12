@@ -8,11 +8,19 @@ public:
 	void c3dInit();
 	void c3dUpdate();
 	void c3dDraw();
+	void c3dLookAt(mat4x4& m,vec4& eyePos,vec4& at,vec4& up);
 	//鼠标键盘机制
 	void c3dKeyPressed(int key);
+	void perspective(mat4x4& m, float fovy, float aspect, float zn, float zf);
+private:
+
+	void c3dSetIdentity(mat4x4& m);
+	void c3dSetZero(mat4x4& m);
 private:
 	c3dCameara cam;	//相机
 	vec2 screen;
 	mat4x4	mview;	//模型矩阵
 	mat4x4  mworld;	//世界矩阵
+	mat4x4 project;	//投影矩阵
+
 };

@@ -11,14 +11,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\cpu3d\c3dCameara.cpp" />
     <ClCompile Include="src\cpu3d\c3dFrame.cpp" />
     <ClCompile Include="src\cpu3d\c3dRender.cpp" />
     <ClCompile Include="src\cpu3d\glmTest.cpp" />
     <ClCompile Include="src\glmTest.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="src\c3dRender.h" />
     <ClInclude Include="src\cpu3d\c3d.h" />
+    <ClInclude Include="src\cpu3d\c3dCameara.h" />
     <ClInclude Include="src\cpu3d\c3dFrame.h" />
     <ClInclude Include="src\cpu3d\c3dRender.h" />
     <ClInclude Include="src\cpu3d\IRender.h" />
