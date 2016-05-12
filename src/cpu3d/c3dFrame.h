@@ -5,7 +5,7 @@
 class c3dFrame
 {
 public:
-	void c3dInit();
+	int c3dInit();
 	void c3dUpdate();
 	void c3dDraw();
 	void c3dLookAt(mat4x4& m,vec4& eyePos,vec4& at,vec4& up);
@@ -16,11 +16,21 @@ private:
 
 	void c3dSetIdentity(mat4x4& m);
 	void c3dSetZero(mat4x4& m);
+	static LRESULT screen_events(HWND hWnd, UINT msg, 
+		WPARAM wParam, LPARAM lParam) ;
+	void close();
+	void dispatch();
 private:
 	c3dCameara cam;	//相机
 	vec2 screen;
 	mat4x4	mview;	//模型矩阵
 	mat4x4  mworld;	//世界矩阵
 	mat4x4 project;	//投影矩阵
+	HDC sHdc;
+	HBITMAP hbitmap;
+	HBITMAP screen_ob;
+	unsigned char *screen_fb;
+	HWND hwnd;
+	long screen_pitch;
 
 };
