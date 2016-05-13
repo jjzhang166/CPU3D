@@ -23,10 +23,10 @@
     <ClCompile Include="src\cpu3d\c3dRender.cpp">
       <Filter>CPU3D</Filter>
     </ClCompile>
-    <ClCompile Include="src\cpu3d\glmTest.cpp">
+    <ClCompile Include="src\cpu3d\c3dCameara.cpp">
       <Filter>CPU3D</Filter>
     </ClCompile>
-    <ClCompile Include="src\cpu3d\c3dCameara.cpp">
+    <ClCompile Include="src\cpu3d\c3dTexture.cpp">
       <Filter>CPU3D</Filter>
     </ClCompile>
   </ItemGroup>
@@ -46,5 +46,9 @@
     <ClInclude Include="src\cpu3d\c3dCameara.h">
       <Filter>CPU3D</Filter>
     </ClInclude>
+    <ClInclude Include="src\cpu3d\c3dTexture.h">
+      <Filter>CPU3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu3d\c3dLog.h" />
   </ItemGroup>
 </Project>

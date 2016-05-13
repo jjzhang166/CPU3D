@@ -1,5 +1,6 @@
 #include <iostream>
 #include "glm.hpp"
+#include "cpu3d/c3dFrame.h"
 using namespace std;
 using namespace glm;
 int main()
@@ -14,6 +15,8 @@ int main()
 	vec2 zz = xx * yy;
 	vec2 z2 = vec2(y);
 	//glm::cross(xx, yy);
+	c3dFrame frame;
+	// frame.c3dDeviceSetTexture();
 	system("pause");
 	return 0;
 }

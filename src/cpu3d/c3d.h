@@ -5,6 +5,7 @@
 #include <windows.h>
 #include <wchar.h>
 #include <tchar.h>
+#include "c3dLog.h"
 using namespace glm;
 using namespace std;
 

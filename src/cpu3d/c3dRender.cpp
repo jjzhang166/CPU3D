@@ -24,3 +24,8 @@ void c3dRender::DrawLine(int px1,int py1,int px2,int py2)
 {
 
 }
+
+void c3dRender::DrawScanLine()
+{
+
+}

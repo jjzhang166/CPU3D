@@ -54,13 +54,19 @@ int c3dFrame::c3dInit()
 
 //	memset(screen_keys, 0, sizeof(int) * 512);
 	memset(screen_fb, 0,screenw * screenh * 4);
-
+	vec4 eye = vec4( 3, 0, 0, 1 );
+	vec4 at = vec4 (0, 0, 0, 1 );
+	vec4 up = vec4 ( 0, 0, 1, 1 );
+	c3dLookAt(mview,eye,at,up);
+	//matrix_set_lookat(&device->transform.view, &eye, &at, &up);
+	//transform_update(&device->transform);
+	transform = mworld * mview * project;
 	return 0;
 }
 
 void c3dFrame::c3dUpdate()
 {
-
+	transform = mworld * mview * project;
 }
 
 void c3dFrame::c3dDraw()
@@ -145,8 +151,10 @@ LRESULT c3dFrame::screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 		/*case WM_CLOSE: screen_exit = 1; break;
 		case WM_KEYDOWN: screen_keys[wParam & 511] = 1; break;
 		case WM_KEYUP: screen_keys[wParam & 511] = 0; break;*/
-	default: return DefWindowProc(hWnd, msg, wParam, lParam);
+	//case :break;
+	//default: return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
+	return DefWindowProc(hWnd, msg, wParam, lParam);
 	return 0;
 }
 
@@ -178,4 +186,28 @@ void c3dFrame::dispatch()
 		if (!GetMessage(&msg, NULL, 0, 0)) break;
 		DispatchMessage(&msg);
 	}
+}
+
+c3dFrame::c3dFrame()
+{
+	this->c3dInit();
+}
+
+c3dFrame::~c3dFrame()
+{
+
+}
+
+void c3dFrame::c3dDeviceSetTexture( void *bits, long pitch, int w, int h)
+{
+	// 设置当前纹理
+		char *ptr = (char*)bits;
+		int j;
+		assert(w <= 1024 && h <= 1024);
+		for (j = 0; j < h; ptr += pitch, j++) 	// 重新计算每行纹理的指针
+			texture[j] = (unsigned int *)ptr;
+		tex_width = w;
+		tex_height = h;
+		max_u = (float)(w - 1);
+		max_v = (float)(h - 1);
 }
