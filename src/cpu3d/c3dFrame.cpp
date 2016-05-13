@@ -99,12 +99,6 @@ void c3dFrame::c3dLookAt(mat4x4& m,vec4& eye,vec4& at,vec4& up)
 	normalize(xaxis);
 	yaxis = cross(zaxis,xaxis);
 
-	//vector_sub(&zaxis, at, eye);
-	//vector_normalize(&zaxis);
-	//vector_crossproduct(&xaxis, up, &zaxis);
-	//vector_normalize(&xaxis);
-	//vector_crossproduct(&yaxis, &zaxis, &xaxis);
-	//vec3 xaxis3 = cross(up.xyz(),zaxis.xyz());
 	m[0][0] = xaxis.x;
 	m[1][0] = xaxis.y;
 	m[2][0] = xaxis.z;
