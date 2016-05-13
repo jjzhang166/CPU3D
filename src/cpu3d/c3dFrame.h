@@ -2,6 +2,7 @@
 //这里是否使用一个绘图机制
 #include "c3d.h"
 #include "c3dCameara.h"
+#include "c3dTexture.h"
 class c3dFrame
 {
 public:
@@ -22,6 +23,7 @@ private:
 		WPARAM wParam, LPARAM lParam) ;
 	void close();
 	void dispatch();
+	void apply(vec4& y,vec4& x,mat4x4& m);
 private:
 	c3dCameara cam;	//相机
 	vec2 screen;
@@ -42,4 +44,8 @@ private:
 	float max_u;
 	float max_v;
 	int renderState;
+	int screenw ;
+	int screenh ;
+	//---------------------
+	c3dTexture tex;
 };

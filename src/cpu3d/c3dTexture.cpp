@@ -6,14 +6,10 @@ void c3dTexture::Init(int w,int h)
 	{
 		return;
 	}
-	//const int cw = w;
-	//const int ch = h;
-	//data = new char[cw][ch];
-	//*data = new  char[];
 	texw = w;
 	texh = h;
 	data = new unsigned char[w * h * 4];
-	memset(data,0,w*h*4);
+	memset(data,33,w*h*4 * sizeof(unsigned char));
 }
 
 void c3dTexture::DrawLine(vec2& p1,vec2& p2)

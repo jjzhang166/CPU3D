@@ -3,8 +3,10 @@
 
 int c3dFrame::c3dInit()
 {
-	const int screenw = 1200;
-	const int screenh = 800;
+	//const int screenw = 1200;
+	//const int screenh = 800;
+	screenw = 1200;
+	screenh = 800;
 	TCHAR title[] = _T("c3d frame");
 	cam.ration = screenw / screenh;
 
@@ -35,11 +37,15 @@ int c3dFrame::c3dInit()
 
 	hbitmap = CreateDIBSection(sHdc, &bi, DIB_RGB_COLORS, &ptr, 0, 0);
 	if (hbitmap == NULL) return -3;
-
+	
 	screen_ob = (HBITMAP)SelectObject(sHdc, hbitmap);
 	screen_fb = (unsigned char*)ptr;
+	for (int i = 0; i< screenw * screenh * 4; ++i)
+	{
+		screen_fb[i] = 255;
+	}
 	screen_pitch = screenw * 4;
-
+	
 	AdjustWindowRect(&rect, GetWindowLong(hwnd, GWL_STYLE), 0);
 	wx = rect.right - rect.left;
 	wy = rect.bottom - rect.top;
@@ -52,8 +58,12 @@ int c3dFrame::c3dInit()
 	ShowWindow(hwnd, SW_NORMAL);
 	dispatch();
 
-//	memset(screen_keys, 0, sizeof(int) * 512);
-	memset(screen_fb, 0,screenw * screenh * 4);
+	//	memset(screen_keys, 0, sizeof(int) * 512);
+	//memset(screen_fb, 200,screenw * screenh * 4);
+	for (int i = 0; i< screenw * screenh * 4; ++i)
+	{
+		screen_fb[i] = 255;
+	}
 	vec4 eye = vec4( 3, 0, 0, 1 );
 	vec4 at = vec4 (0, 0, 0, 1 );
 	vec4 up = vec4 ( 0, 0, 1, 1 );
@@ -61,6 +71,15 @@ int c3dFrame::c3dInit()
 	//matrix_set_lookat(&device->transform.view, &eye, &at, &up);
 	//transform_update(&device->transform);
 	transform = mworld * mview * project;
+	tex.Init(screenw, screenh);
+	unsigned char *data = tex.GetData();
+	//memcpy(screen_fb,data,sizeof(data));
+	while (1)
+	{
+		c3dDraw();
+		dispatch();
+		::Sleep(20);
+	}
 	return 0;
 }
 
@@ -71,7 +90,22 @@ void c3dFrame::c3dUpdate()
 
 void c3dFrame::c3dDraw()
 {
+	vec4 p1 = vec4(2,0,-4,1);
+	vec4 p2 = vec4(0,2,3,1);
+	vec4 p3 = vec4(3,3,-1,1);
+	apply(p1,p2,transform);
 
+	tex.DrawLine(vec2(p1),vec2(p2));
+	unsigned char * data = tex.GetData();
+	memcpy(screen_fb,data,sizeof(tex.GetSize() * 4 * sizeof(unsigned char)));
+	//c3dUpdate();
+	dispatch();
+
+
+	HDC hDC = GetDC(hwnd);
+	BitBlt(hDC, 0, 0, screenw, screenh, sHdc, 0, 0, SRCCOPY);
+	ReleaseDC(hwnd, hDC);
+	dispatch();
 }
 
 void c3dFrame::c3dKeyPressed(int key)
@@ -145,8 +179,8 @@ LRESULT c3dFrame::screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lPara
 		/*case WM_CLOSE: screen_exit = 1; break;
 		case WM_KEYDOWN: screen_keys[wParam & 511] = 1; break;
 		case WM_KEYUP: screen_keys[wParam & 511] = 0; break;*/
-	//case :break;
-	//default: return DefWindowProc(hWnd, msg, wParam, lParam);
+		//case :break;
+		//default: return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
 	return DefWindowProc(hWnd, msg, wParam, lParam);
 	return 0;
@@ -195,13 +229,22 @@ c3dFrame::~c3dFrame()
 void c3dFrame::c3dDeviceSetTexture( void *bits, long pitch, int w, int h)
 {
 	// 设置当前纹理
-		char *ptr = (char*)bits;
-		int j;
-		assert(w <= 1024 && h <= 1024);
-		for (j = 0; j < h; ptr += pitch, j++) 	// 重新计算每行纹理的指针
-			texture[j] = (unsigned int *)ptr;
-		tex_width = w;
-		tex_height = h;
-		max_u = (float)(w - 1);
-		max_v = (float)(h - 1);
+	char *ptr = (char*)bits;
+	int j;
+	assert(w <= 1024 && h <= 1024);
+	for (j = 0; j < h; ptr += pitch, j++) 	// 重新计算每行纹理的指针
+		texture[j] = (unsigned int *)ptr;
+	tex_width = w;
+	tex_height = h;
+	max_u = (float)(w - 1);
+	max_v = (float)(h - 1);
+}
+
+void c3dFrame::apply(vec4& y,vec4& x,mat4x4& m)
+{
+	float X = x.x, Y = x.y, Z = x.z, W = x.w;
+	y.x = X * m[0][0] + Y * m[1][0] + Z * m[2][0] + W * m[3][0];
+	y.y = X * m[0][1] + Y * m[1][1] + Z * m[2][1] + W * m[3][1];
+	y.z = X * m[0][2] + Y * m[1][2] + Z * m[2][2] + W * m[3][2];
+	y.w = X * m[0][3] + Y * m[1][3] + Z * m[2][3] + W * m[3][3];
 }

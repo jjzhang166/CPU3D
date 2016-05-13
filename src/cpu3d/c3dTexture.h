@@ -10,6 +10,7 @@ public:
 	vec2 GetPos(int p);
 	int GetPos(vec2 pos);
 	int GetPos(int x,int y);
+	int GetSize(){return texw* texh;};
 private:
 	unsigned char *data;
 	int texw,texh;
