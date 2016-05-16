@@ -14,9 +14,15 @@ int main()
 	vec2 yy(0,1);
 	vec2 zz = xx * yy;
 	vec2 z2 = vec2(y);
-	//glm::cross(xx, yy);
-	c3dFrame frame;
-	// frame.c3dDeviceSetTexture();
-	system("pause");
+
+	c3dFrame& f = c3dFrame::GetInstance();
+	while (1)
+	{
+		f.c3dUpdate();
+		f.c3dDraw();
+		f.dispatch();
+		Sleep(1);
+	}
+	
 	return 0;
 }

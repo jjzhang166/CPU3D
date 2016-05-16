@@ -1,5 +1,27 @@
 #include "c3dFrame.h"
-#include <windows.h>
+
+static LRESULT screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
+{
+	cout<<"key"<<endl;
+		return DefWindowProc(hWnd, msg, wParam, lParam);
+	switch (msg) {
+	case  WM_KEYDOWN:
+		c3dFrame::GetInstance().c3dKeyPressed(wParam);
+		// cout<<"key"<<endl;
+		// MessageBox(NULL, _T("hello"),_T("少御:"),MB_OK);
+		break;
+	case WM_CLOSE:
+	//	MessageBox(NULL, _T("hello"),_T("少御:"),MB_OK);
+		break;
+	case WM_KEYUP: 
+	//	MessageBox(NULL, _T("hello"),_T("少御:"),MB_OK);
+		break;
+	default: 
+		return DefWindowProc(hWnd, msg, wParam, lParam);
+	}
+
+	return 0;
+}
 
 int c3dFrame::c3dInit()
 {
@@ -40,10 +62,6 @@ int c3dFrame::c3dInit()
 	
 	screen_ob = (HBITMAP)SelectObject(sHdc, hbitmap);
 	screen_fb = (unsigned char*)ptr;
-	for (int i = 0; i< screenw * screenh * 4; ++i)
-	{
-		screen_fb[i] = 255;
-	}
 	screen_pitch = screenw * 4;
 	
 	AdjustWindowRect(&rect, GetWindowLong(hwnd, GWL_STYLE), 0);
@@ -58,34 +76,29 @@ int c3dFrame::c3dInit()
 	ShowWindow(hwnd, SW_NORMAL);
 	dispatch();
 
-	//	memset(screen_keys, 0, sizeof(int) * 512);
-	//memset(screen_fb, 200,screenw * screenh * 4);
-	for (int i = 0; i< screenw * screenh * 4; ++i)
-	{
-		screen_fb[i] = 255;
-	}
+	memset(screen_fb, 0,screenw * screenh * 4);
 	vec4 eye = vec4( 3, 0, 0, 1 );
 	vec4 at = vec4 (0, 0, 0, 1 );
 	vec4 up = vec4 ( 0, 0, 1, 1 );
 	c3dLookAt(mview,eye,at,up);
-	//matrix_set_lookat(&device->transform.view, &eye, &at, &up);
-	//transform_update(&device->transform);
 	transform = mworld * mview * project;
 	tex.Init(screenw, screenh);
-	unsigned char *data = tex.GetData();
+	//unsigned char *data = tex.GetData();
+	
 	//memcpy(screen_fb,data,sizeof(data));
-	while (1)
-	{
-		c3dDraw();
-		dispatch();
-		::Sleep(20);
-	}
+	
 	return 0;
 }
 
 void c3dFrame::c3dUpdate()
 {
-	transform = mworld * mview * project;
+		//transform = mworld * mview * project;
+
+		HDC hDC = GetDC(hwnd);
+		BitBlt(hDC, 0, 0, screenw, screenh, sHdc, 0, 0, SRCCOPY);
+		ReleaseDC(hwnd, hDC);
+		dispatch();
+
 }
 
 void c3dFrame::c3dDraw()
@@ -102,15 +115,16 @@ void c3dFrame::c3dDraw()
 	dispatch();
 
 
-	HDC hDC = GetDC(hwnd);
+	/*HDC hDC = GetDC(hwnd);
 	BitBlt(hDC, 0, 0, screenw, screenh, sHdc, 0, 0, SRCCOPY);
 	ReleaseDC(hwnd, hDC);
-	dispatch();
+	dispatch();*/
 }
 
 void c3dFrame::c3dKeyPressed(int key)
 {
-
+	MessageBox(hwnd, _T("hello"),_T("少御:"),MB_OK);
+	skey[ key & 511] = true;
 }
 
 void c3dFrame::c3dSetIdentity(mat4x4& m)
@@ -172,19 +186,6 @@ void c3dFrame::c3dSetZero(mat4x4& m)
 	m[3][0] =  m[3][1] =  m[3][2] =  m[3][3] = 0.0f;
 }
 
-LRESULT c3dFrame::screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
-{
-
-	switch (msg) {
-		/*case WM_CLOSE: screen_exit = 1; break;
-		case WM_KEYDOWN: screen_keys[wParam & 511] = 1; break;
-		case WM_KEYUP: screen_keys[wParam & 511] = 0; break;*/
-		//case :break;
-		//default: return DefWindowProc(hWnd, msg, wParam, lParam);
-	}
-	return DefWindowProc(hWnd, msg, wParam, lParam);
-	return 0;
-}
 
 void c3dFrame::close()
 {
@@ -247,4 +248,9 @@ void c3dFrame::apply(vec4& y,vec4& x,mat4x4& m)
 	y.y = X * m[0][1] + Y * m[1][1] + Z * m[2][1] + W * m[3][1];
 	y.z = X * m[0][2] + Y * m[1][2] + Z * m[2][2] + W * m[3][2];
 	y.w = X * m[0][3] + Y * m[1][3] + Z * m[2][3] + W * m[3][3];
+}
+
+void c3dFrame::c3dKeyUp(int key)
+{
+	skey[ key & 511] = false;
 }

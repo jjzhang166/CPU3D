@@ -6,6 +6,11 @@
 class c3dFrame
 {
 public:
+	static c3dFrame& GetInstance()
+	{
+		static c3dFrame frame;
+		return frame;
+	}
 	c3dFrame();
 	~c3dFrame();
 	int c3dInit();
@@ -14,15 +19,16 @@ public:
 	void c3dLookAt(mat4x4& m,vec4& eyePos,vec4& at,vec4& up);
 	//鼠标键盘机制
 	void c3dKeyPressed(int key);
+	void c3dKeyUp(int key);
 	void perspective(mat4x4& m, float fovy, float aspect, float zn, float zf);
+	void dispatch();
 private:
 	void c3dDeviceSetTexture( void *bits, long pitch, int w, int h );
 	void c3dSetIdentity(mat4x4& m);
 	void c3dSetZero(mat4x4& m);
-	static LRESULT screen_events(HWND hWnd, UINT msg, 
-		WPARAM wParam, LPARAM lParam) ;
+	
 	void close();
-	void dispatch();
+	
 	void apply(vec4& y,vec4& x,mat4x4& m);
 private:
 	c3dCameara cam;	//相机
@@ -48,4 +54,8 @@ private:
 	int screenh ;
 	//---------------------
 	c3dTexture tex;
+
+	bool skey[512];
 };
+//static LRESULT screen_events(HWND hWnd, UINT msg, 
+//							 WPARAM wParam, LPARAM lParam) ;
