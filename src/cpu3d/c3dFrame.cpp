@@ -3,7 +3,7 @@
 static LRESULT screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
 	cout<<"key"<<endl;
-		return DefWindowProc(hWnd, msg, wParam, lParam);
+		//return DefWindowProc(hWnd, msg, wParam, lParam);
 	switch (msg) {
 	case  WM_KEYDOWN:
 		c3dFrame::GetInstance().c3dKeyPressed(wParam);
@@ -13,8 +13,13 @@ static LRESULT screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_CLOSE:
 	//	MessageBox(NULL, _T("hello"),_T("少御:"),MB_OK);
 		break;
+		
+	case WM_LBUTTONDOWN:
+		c3dFrame::GetInstance().c3dKeyUp(wParam);
+		MessageBox(NULL, _T("hello"),_T("少御:"),MB_OK);
+		break;
 	case WM_KEYUP: 
-	//	MessageBox(NULL, _T("hello"),_T("少御:"),MB_OK);
+		c3dFrame::GetInstance().c3dKeyUp(wParam);
 		break;
 	default: 
 		return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -123,8 +128,22 @@ void c3dFrame::c3dDraw()
 
 void c3dFrame::c3dKeyPressed(int key)
 {
-	MessageBox(hwnd, _T("hello"),_T("少御:"),MB_OK);
+	
 	skey[ key & 511] = true;
+
+	char ch = key;
+	switch (ch)
+	{
+	case 'A':
+		MessageBox(hwnd, _T("hello"),_T("a:"),MB_OK);
+		break;
+	case 'D':
+		MessageBox(hwnd, _T("hello"),_T("d:"),MB_OK);
+		break;
+	default:
+		break;
+	}
+
 }
 
 void c3dFrame::c3dSetIdentity(mat4x4& m)
@@ -184,6 +203,7 @@ void c3dFrame::c3dSetZero(mat4x4& m)
 	m[1][0] =  m[1][1] =  m[1][2] =  m[1][3] = 0.0f;
 	m[2][0] =  m[2][1] =  m[2][2] =  m[2][3] = 0.0f;
 	m[3][0] =  m[3][1] =  m[3][2] =  m[3][3] = 0.0f;
+	transform = mworld * mview * project;
 }
 
 
@@ -210,10 +230,18 @@ void c3dFrame::close()
 void c3dFrame::dispatch()
 {
 	MSG msg;
-	while (1) {
-		if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) break;
-		if (!GetMessage(&msg, NULL, 0, 0)) break;
-		DispatchMessage(&msg);
+	//while (1) {
+	//	if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) break;
+	//	if (!GetMessage(&msg, NULL, 0, 0)) break;
+	//	DispatchMessage(&msg);
+	//}
+	while (GetMessage(&msg, NULL, 0, 0))
+	{
+		//if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
 	}
 }
 

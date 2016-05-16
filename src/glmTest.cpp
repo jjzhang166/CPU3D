@@ -1,5 +1,5 @@
 #include <iostream>
-#include "glm.hpp"
+
 #include "cpu3d/c3dFrame.h"
 using namespace std;
 using namespace glm;
@@ -14,10 +14,11 @@ int main()
 	vec2 yy(0,1);
 	vec2 zz = xx * yy;
 	vec2 z2 = vec2(y);
-
+	
 	c3dFrame& f = c3dFrame::GetInstance();
-	while (1)
+	while (true)
 	{
+		
 		f.c3dUpdate();
 		f.c3dDraw();
 		f.dispatch();
