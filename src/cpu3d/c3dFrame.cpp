@@ -92,7 +92,7 @@ int c3dFrame::c3dInit()
 	//dispatch();
 
 	memset(screen_fb, 0,screenw * screenh * 4);
-	vec4 eye = vec4( 3, 0, 0, 1 );
+	vec4 eye = vec4( 10, 0, 0, 1 );
 	vec4 at = vec4 (0, 0, 0, 1 );
 	vec4 up = vec4 ( 0, 0, 1, 1 );
 	c3dLookAt(mview,eye,at,up);
@@ -116,7 +116,27 @@ void c3dFrame::c3dDraw()
 	vec4 p1 = vec4(2,0,-4,1);
 	vec4 p2 = vec4(0,2,3,1);
 	vec4 p3 = vec4(3,3,-1,1);
+	
+	for (int i = 0; i < 8; ++i)
+	{
+		for (int j = 0; j < 8; ++j)
+		{
+			if ( i != j )
+			{
+				vec4 v1,v2;
+				apply( v1, cube.data[i], transform);
+				apply( v2, cube.data[j], transform);
+				tex.DrawLine(vec2(v1),vec2(v2));
+			}
+		}
+
+	}
 	apply(p1,p2,transform);
+
+
+
+
+
 
 	vec2 lastPos;
 	POINT p;
@@ -124,7 +144,7 @@ void c3dFrame::c3dDraw()
 	//tex.DrawLine(vec2(p.x,p.y),lastPos);
 	//tex.DrawDebug(vec2(p.x,p.y),lastPos);
 
-	//tex.DrawLine(vec2(p1),vec2(p2));
+	tex.DrawLine(vec2(p1),vec2(p2));
 	unsigned char * data = tex.GetData();
 	int size = tex.GetSize();
 	memcpy(screen_fb,data, size * 4 * sizeof(unsigned char));
@@ -309,6 +329,10 @@ void c3dFrame::c3dMouseUp(int button,int x,int y)
 	GetCursorPos(&p);
 	ScreenToClient(hwnd,&p);
 	vec2 final = vec2(p.x,p.y);
+#if _DEBUG
 	cout<<lastPoint.x<<","<<lastPoint.y<<")("<<final.x<<","<<final.y<<endl;
+#endif // _DEBUG
+
+	
 	tex.DrawLine(lastPoint,final);
 }

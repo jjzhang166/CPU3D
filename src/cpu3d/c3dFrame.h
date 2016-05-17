@@ -3,6 +3,7 @@
 #include "c3d.h"
 #include "c3dCameara.h"
 #include "c3dTexture.h"
+#include "c3dShapes.h"
 class c3dFrame
 {
 public:
@@ -60,6 +61,9 @@ private:
 	bool skey[512];
 
 	vec2 lastPoint;
+
+	//关于正方体 的一个些几何体
+	c3dCube cube;
 };
 static LRESULT screen_events(HWND hWnd, UINT msg, 
 							 WPARAM wParam, LPARAM lParam) ;
