@@ -9,21 +9,27 @@ void c3dTexture::Init(int w,int h)
 	texw = w;
 	texh = h;
 	data = new unsigned char[w * h * 4];
-	memset(data,33,w*h*4 * sizeof(unsigned char));
+	memset(data,0,w*h*4 * sizeof(unsigned char));
 }
 
 void c3dTexture::DrawLine(vec2& p1,vec2& p2)
 {
+	//这里先判断颜色坐标是否在区域内
+	if (p1.x >= texw || p2.x >= texw || p2.x >= texh || p2.y >= texh)
+	{
+		return;
+	}
+
 	//颜色待定
 
 	vec2 k = p2 - p1; 
-	int x = 0;
-	int y = 0;
+	float x = 0;
+	float y = 0;
 	if (k.x == 0)
 	{
 		if (k.y == 0)
 		{
-			int spos = GetPos(p1.x,p1.y);
+			int spos = GetPos(p1.x,p1.y) * 4;
 			data[spos] = 0xFF;
 			data[spos+1] = 0xFF;	//g
 			data[spos+2] = 0xFF;	//b
@@ -42,14 +48,26 @@ void c3dTexture::DrawLine(vec2& p1,vec2& p2)
 				data[spos+3] = 0xFF;	//a
 			}
 		}
+		if (p1.y > p2.y)
+		{
+			for (int i = p2.y; i < p1.y; ++i)
+			{
+				int spos = GetPos(p1.x, i) * 4;
+				data[spos] = 0xFF;
+				data[spos+1] = 0xFF;	//g
+				data[spos+2] = 0xFF;	//b
+				data[spos+3] = 0xFF;	//a
+			}
+		}
 		
 	}
 	if (k.x > 0)
 	{
-		for (int i = p1.x; i < p2.x; ++ k.x)
+		y = p1.y;
+		for (int i = p1.x; i < p2.x; /*i += k.x*/ ++i)
 		{
 			x = i;
-			y = p1.y + k.y;
+			y += k.y / k.x;
 			int spos = GetPos(x,y) * 4;
 			data[spos] = 0xFF;	//r
 			data[spos+1] = 0xFF;	//g
@@ -58,10 +76,11 @@ void c3dTexture::DrawLine(vec2& p1,vec2& p2)
 		}
 	}else
 	{
-		for (int i = p1.x; i > p2.x; ++ k.x)
+		y = p1.y;
+		for (int i = p1.x; i > p2.x;/* i += k.x*/--i)
 		{
 			x = i;
-			y = p1.y + k.y;
+			y += -1 * k.y / k.x;
 			int spos = GetPos(x,y) * 4;
 			data[spos] = 0xFF;	//r
 			data[spos+1] = 0xFF;	//g
@@ -111,4 +130,16 @@ int c3dTexture::GetPos(int x,int y)
 	}
 	int m = (y - 1) *texw + x;
 	return m;
+}
+
+void c3dTexture::DrawDebug(vec2& p1,vec2&p2)
+{
+#ifdef _DEBUG
+	for (int i = 0; i < texw * texh*4; ++i)
+	{
+		//data[i] = i % 255 ;
+	}
+#endif // _DEBUG
+
+
 }

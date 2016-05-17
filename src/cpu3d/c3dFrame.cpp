@@ -2,24 +2,32 @@
 
 static LRESULT screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 {
-	cout<<"key"<<endl;
-		//return DefWindowProc(hWnd, msg, wParam, lParam);
 	switch (msg) {
+	case WM_KEYUP: 
+		c3dFrame::GetInstance().c3dKeyUp(wParam);
+		break;
 	case  WM_KEYDOWN:
 		c3dFrame::GetInstance().c3dKeyPressed(wParam);
 		// cout<<"key"<<endl;
 		// MessageBox(NULL, _T("hello"),_T("警告:"),MB_OK);
 		break;
-	case WM_CLOSE:
-	//	MessageBox(NULL, _T("hello"),_T("警告:"),MB_OK);
-		break;
-		
 	case WM_LBUTTONDOWN:
-		c3dFrame::GetInstance().c3dKeyUp(wParam);
-		MessageBox(NULL, _T("hello"),_T("警告:"),MB_OK);
+		c3dFrame::GetInstance().c3dMouseDown(0,0,0);
+		//	MessageBox(NULL, _T("hello"),_T("警告:"),MB_OK);
 		break;
-	case WM_KEYUP: 
-		c3dFrame::GetInstance().c3dKeyUp(wParam);
+	case WM_LBUTTONUP:
+		c3dFrame::GetInstance().c3dMouseUp(0,0,0);
+		break;
+	case WM_CLOSE:
+		//	MessageBox(NULL, _T("close"),_T("close:"),MB_OK);
+		DestroyWindow(hWnd);
+		break;
+		//case WM_PAINT:
+		//	c3dFrame::GetInstance().c3dUpdate();
+		//	c3dFrame::GetInstance().c3dDraw();
+		//	break;
+	case WM_DESTROY:
+		//	MessageBox(NULL, _T("我要关闭了"),_T("关闭提示:"),MB_OK);
 		break;
 	default: 
 		return DefWindowProc(hWnd, msg, wParam, lParam);
@@ -34,6 +42,7 @@ int c3dFrame::c3dInit()
 	//const int screenh = 800;
 	screenw = 1200;
 	screenh = 800;
+	tex.Init(screenw, screenh);
 	TCHAR title[] = _T("c3d frame");
 	cam.ration = screenw / screenh;
 
@@ -64,11 +73,11 @@ int c3dFrame::c3dInit()
 
 	hbitmap = CreateDIBSection(sHdc, &bi, DIB_RGB_COLORS, &ptr, 0, 0);
 	if (hbitmap == NULL) return -3;
-	
+
 	screen_ob = (HBITMAP)SelectObject(sHdc, hbitmap);
 	screen_fb = (unsigned char*)ptr;
 	screen_pitch = screenw * 4;
-	
+
 	AdjustWindowRect(&rect, GetWindowLong(hwnd, GWL_STYLE), 0);
 	wx = rect.right - rect.left;
 	wy = rect.bottom - rect.top;
@@ -79,7 +88,8 @@ int c3dFrame::c3dInit()
 	SetForegroundWindow(hwnd);
 
 	ShowWindow(hwnd, SW_NORMAL);
-	dispatch();
+	UpdateWindow(hwnd);
+	//dispatch();
 
 	memset(screen_fb, 0,screenw * screenh * 4);
 	vec4 eye = vec4( 3, 0, 0, 1 );
@@ -87,23 +97,18 @@ int c3dFrame::c3dInit()
 	vec4 up = vec4 ( 0, 0, 1, 1 );
 	c3dLookAt(mview,eye,at,up);
 	transform = mworld * mview * project;
-	tex.Init(screenw, screenh);
-	//unsigned char *data = tex.GetData();
-	
-	//memcpy(screen_fb,data,sizeof(data));
-	
+	c3dDraw();
+
 	return 0;
 }
 
 void c3dFrame::c3dUpdate()
 {
-		//transform = mworld * mview * project;
+	//transform = mworld * mview * project;
 
-		HDC hDC = GetDC(hwnd);
-		BitBlt(hDC, 0, 0, screenw, screenh, sHdc, 0, 0, SRCCOPY);
-		ReleaseDC(hwnd, hDC);
-		dispatch();
-
+	HDC hDC = GetDC(hwnd);
+	BitBlt(hDC, 0, 0, screenw, screenh, sHdc, 0, 0, SRCCOPY);
+	ReleaseDC(hwnd, hDC);
 }
 
 void c3dFrame::c3dDraw()
@@ -113,22 +118,21 @@ void c3dFrame::c3dDraw()
 	vec4 p3 = vec4(3,3,-1,1);
 	apply(p1,p2,transform);
 
-	tex.DrawLine(vec2(p1),vec2(p2));
+	vec2 lastPos;
+	POINT p;
+	GetCursorPos(&p);
+	//tex.DrawLine(vec2(p.x,p.y),lastPos);
+	//tex.DrawDebug(vec2(p.x,p.y),lastPos);
+
+	//tex.DrawLine(vec2(p1),vec2(p2));
 	unsigned char * data = tex.GetData();
-	memcpy(screen_fb,data,sizeof(tex.GetSize() * 4 * sizeof(unsigned char)));
-	//c3dUpdate();
-	dispatch();
-
-
-	/*HDC hDC = GetDC(hwnd);
-	BitBlt(hDC, 0, 0, screenw, screenh, sHdc, 0, 0, SRCCOPY);
-	ReleaseDC(hwnd, hDC);
-	dispatch();*/
+	int size = tex.GetSize();
+	memcpy(screen_fb,data, size * 4 * sizeof(unsigned char));
 }
 
 void c3dFrame::c3dKeyPressed(int key)
 {
-	
+
 	skey[ key & 511] = true;
 
 	char ch = key;
@@ -230,18 +234,25 @@ void c3dFrame::close()
 void c3dFrame::dispatch()
 {
 	MSG msg;
-	//while (1) {
-	//	if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) break;
-	//	if (!GetMessage(&msg, NULL, 0, 0)) break;
-	//	DispatchMessage(&msg);
-	//}
+	/*while (1) {
+	if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) return;
+	if (!GetMessage(&msg, NULL, 0, 0)) return;
+	TranslateMessage(&msg);
+	DispatchMessage(&msg);
+	}*/
 	while (GetMessage(&msg, NULL, 0, 0))
 	{
-		//if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+		TranslateMessage(&msg);
+		DispatchMessage(&msg);
+		//c3dFrame::GetInstance().c3dUpdate();
+		c3dDraw();
+		c3dUpdate();
+
+		/*	for (int i = 0; i < screenw * screenh*4; ++i)
 		{
-			TranslateMessage(&msg);
-			DispatchMessage(&msg);
-		}
+		screen_fb[i] = i / 255 ;
+		}*/
+		//memset(screen_fb, 100,screenw * screenh * 4);
 	}
 }
 
@@ -281,4 +292,23 @@ void c3dFrame::apply(vec4& y,vec4& x,mat4x4& m)
 void c3dFrame::c3dKeyUp(int key)
 {
 	skey[ key & 511] = false;
+}
+
+void c3dFrame::c3dMouseDown(int button,int x,int y)
+{
+	POINT p;
+	GetCursorPos(&p);
+	ScreenToClient(hwnd,&p);
+	lastPoint.x = p.x;
+	lastPoint.y = p.y;
+}
+
+void c3dFrame::c3dMouseUp(int button,int x,int y)
+{
+	POINT p;
+	GetCursorPos(&p);
+	ScreenToClient(hwnd,&p);
+	vec2 final = vec2(p.x,p.y);
+	cout<<lastPoint.x<<","<<lastPoint.y<<")("<<final.x<<","<<final.y<<endl;
+	tex.DrawLine(lastPoint,final);
 }

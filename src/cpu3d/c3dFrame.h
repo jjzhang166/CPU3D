@@ -20,6 +20,8 @@ public:
 	//Êó±ê¼üÅÌ»úÖÆ
 	void c3dKeyPressed(int key);
 	void c3dKeyUp(int key);
+	void c3dMouseDown(int button,int x,int y);
+	void c3dMouseUp(int button,int x,int y);
 	void perspective(mat4x4& m, float fovy, float aspect, float zn, float zf);
 	void dispatch();
 private:
@@ -56,6 +58,8 @@ private:
 	c3dTexture tex;
 
 	bool skey[512];
+
+	vec2 lastPoint;
 };
-//static LRESULT screen_events(HWND hWnd, UINT msg, 
-//							 WPARAM wParam, LPARAM lParam) ;
+static LRESULT screen_events(HWND hWnd, UINT msg, 
+							 WPARAM wParam, LPARAM lParam) ;

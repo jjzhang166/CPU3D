@@ -16,14 +16,15 @@ int main()
 	vec2 z2 = vec2(y);
 	
 	c3dFrame& f = c3dFrame::GetInstance();
-	while (true)
-	{
-		
-		f.c3dUpdate();
-		f.c3dDraw();
-		f.dispatch();
-		Sleep(1);
-	}
+	//while (1)	f.dispatch();
+	f.dispatch();
+	//while (true)
+	//{
+	//	f.dispatch();
+	//	f.c3dUpdate();
+	//	f.c3dDraw();
+	//	Sleep(1);
+	//}
 	
 	return 0;
 }
