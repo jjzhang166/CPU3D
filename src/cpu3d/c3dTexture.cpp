@@ -11,84 +11,73 @@ void c3dTexture::Init(int w,int h)
 	data = new unsigned char[w * h * 4];
 	memset(data,0,w*h*4 * sizeof(unsigned char));
 }
-
+//暂时颜色为白色，后面会补充
 void c3dTexture::DrawLine(vec2& p1,vec2& p2)
 {
-	//这里先判断颜色坐标是否在区域内
-	if (p1.x >= texw || p2.x >= texw || p2.x >= texh || p2.y >= texh)
+	//从bug判断这里是 画线的方式沿着 x坐标来画，当y值变化比较大的时候
+	//导致画线不连续，所以这里从根据X递增或者根据y递增是要判断的
+	vec2 k = p2 - p1;		
+	vec2 kAbs = glm::abs(k);
+	bool bLoopedByY = false;
+	kAbs.y > kAbs.x ? bLoopedByY = true : bLoopedByY =  false;
+	//判断两点坐标是否和法，其实这里 暂时没想到更好的解决办法，
+	//因为裁剪 应该是视锥裁剪
+	if (p1.x >= texw || p2.x >= texw || p1.y >= texh || p2.y >= texh)
 	{
 		return;
 	}
-
-	//颜色待定
-
-	vec2 k = p2 - p1; 
-	float x = 0;
-	float y = 0;
-	if (k.x == 0)
+	//这里应该根据 是否沿着Y坐标画线来决定 而且要从做往右
+	vec2 srcPoint,dstPoint;
+	float stepX = 0;
+	float stepY = 0;
+	if (bLoopedByY)
 	{
-		if (k.y == 0)
+		if( p1.y < p2.y )
 		{
-			int spos = GetPos(p1.x,p1.y) * 4;
-			data[spos] = 0xFF;
-			data[spos+1] = 0xFF;	//g
-			data[spos+2] = 0xFF;	//b
-			data[spos+3] = 0xFF;	//a
-			return;
+			srcPoint = p1;
+			dstPoint = p2;
 		}
-		//p1.y p2.y
-		if (p1.y < p2.y)
+		else{
+			srcPoint = p2;
+			dstPoint = p1;
+		}
+		float step = k.x / k.y;	//这里要注意，为每走一步Y，x所走的距离 x要转化为整数
+		stepX = srcPoint.x;
+		for (int y = srcPoint.y; y < dstPoint.y; ++y)
 		{
-			for (int i = p1.y; i < p2.y; ++i)
-			{
-				int spos = GetPos(p1.x, i) * 4;
-				data[spos] = 0xFF;
-				data[spos+1] = 0xFF;	//g
-				data[spos+2] = 0xFF;	//b
-				data[spos+3] = 0xFF;	//a
-			}
+			stepX += step;
+			stepY = y;
+			int spos = GetPos(stepX, stepY) * 4;
+			data[ spos ] = 0xFF;
+			data[ spos + 1 ] = 0xFF;	//g
+			data[ spos + 2 ] = 0xFF;	//b
+			data[ spos + 3 ] = 0xFF;	//a
 		}
-		if (p1.y > p2.y)
+	}else{
+		//这里是沿着x坐标画线
+		if( p1.x < p2.x )
 		{
-			for (int i = p2.y; i < p1.y; ++i)
-			{
-				int spos = GetPos(p1.x, i) * 4;
-				data[spos] = 0xFF;
-				data[spos+1] = 0xFF;	//g
-				data[spos+2] = 0xFF;	//b
-				data[spos+3] = 0xFF;	//a
-			}
+			srcPoint = p1;
+			dstPoint = p2;
 		}
-		
+		else{
+			srcPoint = p2;
+			dstPoint = p1;
+		}
+		float step = k.y / k.x;	//这里要注意，为每走一步Y，x所走的距离 x要转化为整数
+		stepY = srcPoint.y;
+		for (int x = srcPoint.x; x < dstPoint.x; ++x)
+		{
+			stepY += step;
+			stepX = x;
+			int spos = GetPos(stepX, stepY) * 4;
+			data[ spos ] = 0xFF;
+			data[ spos + 1 ] = 0xFF;	//g
+			data[ spos + 2 ] = 0xFF;	//b
+			data[ spos + 3 ] = 0xFF;	//a
+		}
+
 	}
-	if (k.x > 0)
-	{
-		y = p1.y;
-		for (int i = p1.x; i < p2.x; /*i += k.x*/ ++i)
-		{
-			x = i;
-			y += k.y / k.x;
-			int spos = GetPos(x,y) * 4;
-			data[spos] = 0xFF;	//r
-			data[spos+1] = 0xFF;	//g
-			data[spos+2] = 0xFF;	//b
-			data[spos+3] = 0xFF;	//a
-		}
-	}else
-	{
-		y = p1.y;
-		for (int i = p1.x; i > p2.x;/* i += k.x*/--i)
-		{
-			x = i;
-			y += -1 * k.y / k.x;
-			int spos = GetPos(x,y) * 4;
-			data[spos] = 0xFF;	//r
-			data[spos+1] = 0xFF;	//g
-			data[spos+2] = 0xFF;	//b
-			data[spos+3] = 0xFF;	//a
-		}
-	}
-
 }
 
 void c3dTexture::DrawTriangle(vec2& p1,vec2&p2,vec2& p3)
