@@ -22,10 +22,22 @@ void c3dTexture::DrawLine(vec2& p1,vec2& p2)
 	kAbs.y > kAbs.x ? bLoopedByY = true : bLoopedByY =  false;
 	//判断两点坐标是否和法，其实这里 暂时没想到更好的解决办法，
 	//因为裁剪 应该是视锥裁剪
-	if (p1.x >= texw || p2.x >= texw || p1.y >= texh || p2.y >= texh)
+	/*if (p1.x >= texw || p2.x >= texw || p1.y >= texh || p2.y >= texh)
 	{
 		return;
-	}
+	}*/
+	if ( p1.x > texw ) p1.x = texw;
+	if ( p1.y > texh ) p1.y = texh;
+	if ( p2.x > texw ) p2.x = texw;
+	if ( p2.y > texh ) p2.y = texh;
+
+	if ( p1.x < 0 ) p1.x = 0;
+	if ( p1.y < 0 ) p1.y = 0;
+	if ( p2.x < 0 ) p2.x = 0;
+	if ( p2.y < 0 ) p2.y = 0;
+
+
+
 	//这里应该根据 是否沿着Y坐标画线来决定 而且要从做往右
 	vec2 srcPoint,dstPoint;
 	float stepX = 0;
