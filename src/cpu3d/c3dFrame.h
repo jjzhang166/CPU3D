@@ -23,13 +23,14 @@ public:
 	void c3dKeyUp(int key);
 	void c3dMouseDown(int button,int x,int y);
 	void c3dMouseUp(int button,int x,int y);
+	void c3dMouseMove(int button,int x,int y);
 	void perspective(mat4x4& m, float fovy, float aspect, float zn, float zf);
 	void dispatch();
 private:
 	void c3dDeviceSetTexture( void *bits, long pitch, int w, int h );
 	void c3dSetIdentity(mat4x4& m);
 	void c3dSetZero(mat4x4& m);
-	
+	void c3dToScreenCoord(vec2&,vec4&);
 	void close();
 	
 	void apply(vec4& y,vec4& x,mat4x4& m);
@@ -64,6 +65,7 @@ private:
 
 	//关于正方体 的一个些几何体
 	c3dCube cube;
+	bool bMouseDown;
 };
 static LRESULT screen_events(HWND hWnd, UINT msg, 
 							 WPARAM wParam, LPARAM lParam) ;

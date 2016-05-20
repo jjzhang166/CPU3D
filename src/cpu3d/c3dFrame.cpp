@@ -18,6 +18,9 @@ static LRESULT screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_LBUTTONUP:
 		c3dFrame::GetInstance().c3dMouseUp(0,0,0);
 		break;
+	case  WM_MOUSEMOVE:
+		c3dFrame::GetInstance().c3dMouseMove(0, 0, 0);
+		break;
 	case WM_CLOSE:
 		//	MessageBox(NULL, _T("close"),_T("close:"),MB_OK);
 		DestroyWindow(hWnd);
@@ -92,13 +95,14 @@ int c3dFrame::c3dInit()
 	//dispatch();
 
 	memset(screen_fb, 0,screenw * screenh * 4);
-	vec4 eye = vec4( 10, 0, 0, 1 );
+	vec4 eye = vec4( 0, 0, 2, 1 );
 	vec4 at = vec4 (0, 0, 0, 1 );
-	vec4 up = vec4 ( 0, 0, 1, 1 );
+	vec4 up = vec4 ( 0, 1, 0, 1 );
 	c3dLookAt(mview,eye,at,up);
 	transform = mworld * mview * project;
+	perspective(transform,0,screenw/screenh,0,20);
 	c3dDraw();
-
+	mview = glm::scale(mview,vec3(10, 10, 10));
 	return 0;
 }
 
@@ -110,13 +114,11 @@ void c3dFrame::c3dUpdate()
 	BitBlt(hDC, 0, 0, screenw, screenh, sHdc, 0, 0, SRCCOPY);
 	ReleaseDC(hwnd, hDC);
 }
-
+float f = 0;
 void c3dFrame::c3dDraw()
 {
-	vec4 p1 = vec4(2,0,-4,1);
-	vec4 p2 = vec4(0,2,3,1);
-	vec4 p3 = vec4(3,3,-1,1);
-	
+	mview = glm::rotate(mview, f, glm::vec3(0, 0.001, 0.001)); 
+	transform = mworld * mview * project;
 	for (int i = 0; i < 8; ++i)
 	{
 		for (int j = 0; j < 8; ++j)
@@ -124,30 +126,32 @@ void c3dFrame::c3dDraw()
 			if ( i != j )
 			{
 				vec4 v1,v2;
-				apply( v1, cube.data[i], transform);
-				apply( v2, cube.data[j], transform);
-				tex.DrawLine(vec2(v1),vec2(v2));
+				vec4 ina,inb;
+				vec2 out1,out2;
+				//ina =  vec4(glm::rotateY(glm::vec3(cube.data[i]),1.0f), f);
+				//inb =  vec4(glm::rotateY(glm::vec3(cube.data[j]),1.0f), f);
+				ina = cube.data[i];
+				inb = cube.data[j];
+				apply( v1, ina, transform);
+				apply( v2, inb, transform);
+				c3dToScreenCoord(out1, v1);
+				c3dToScreenCoord(out2, v2);
+				tex.DrawLine(out1, out2);
 			}
 		}
 
 	}
-	apply(p1,p2,transform);
-
-
-
-
-
 
 	vec2 lastPos;
 	POINT p;
 	GetCursorPos(&p);
-	//tex.DrawLine(vec2(p.x,p.y),lastPos);
-	//tex.DrawDebug(vec2(p.x,p.y),lastPos);
 
-	tex.DrawLine(vec2(p1),vec2(p2));
 	unsigned char * data = tex.GetData();
 	int size = tex.GetSize();
 	memcpy(screen_fb,data, size * 4 * sizeof(unsigned char));
+
+
+	tex.Clear();
 }
 
 void c3dFrame::c3dKeyPressed(int key)
@@ -267,7 +271,6 @@ void c3dFrame::dispatch()
 		//c3dFrame::GetInstance().c3dUpdate();
 		c3dDraw();
 		c3dUpdate();
-
 		/*	for (int i = 0; i < screenw * screenh*4; ++i)
 		{
 		screen_fb[i] = i / 255 ;
@@ -321,10 +324,12 @@ void c3dFrame::c3dMouseDown(int button,int x,int y)
 	ScreenToClient(hwnd,&p);
 	lastPoint.x = p.x;
 	lastPoint.y = p.y;
+	bMouseDown = true;
 }
 
 void c3dFrame::c3dMouseUp(int button,int x,int y)
 {
+	bMouseDown = false;
 	POINT p;
 	GetCursorPos(&p);
 	ScreenToClient(hwnd,&p);
@@ -333,6 +338,20 @@ void c3dFrame::c3dMouseUp(int button,int x,int y)
 	cout<<lastPoint.x<<","<<lastPoint.y<<")("<<final.x<<","<<final.y<<endl;
 #endif // _DEBUG
 
-	
+
 	tex.DrawLine(lastPoint,final);
+}
+
+void c3dFrame::c3dToScreenCoord(vec2& out,vec4& in)
+{
+	out.x = in.x + 0.5 * screenw;
+	out.y = in.y + 0.5 * screenh;
+}
+
+void c3dFrame::c3dMouseMove(int button,int x,int y)
+{
+	if (bMouseDown)
+	{
+		f += 0.1f;
+	}
 }

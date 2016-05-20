@@ -24,9 +24,10 @@ void c3dTexture::DrawLine(vec2& p1,vec2& p2)
 	//因为裁剪 应该是视锥裁剪
 	/*if (p1.x >= texw || p2.x >= texw || p1.y >= texh || p2.y >= texh)
 	{
-		return;
+	return;
 	}*/
-	if ( p1.x > texw ) p1.x = texw;
+	//下面处理的这一块有问题需要修正， 不能改变画线的斜率
+	/*if ( p1.x > texw ) p1.x = texw;
 	if ( p1.y > texh ) p1.y = texh;
 	if ( p2.x > texw ) p2.x = texw;
 	if ( p2.y > texh ) p2.y = texh;
@@ -34,7 +35,7 @@ void c3dTexture::DrawLine(vec2& p1,vec2& p2)
 	if ( p1.x < 0 ) p1.x = 0;
 	if ( p1.y < 0 ) p1.y = 0;
 	if ( p2.x < 0 ) p2.x = 0;
-	if ( p2.y < 0 ) p2.y = 0;
+	if ( p2.y < 0 ) p2.y = 0;*/
 
 
 
@@ -60,10 +61,16 @@ void c3dTexture::DrawLine(vec2& p1,vec2& p2)
 			stepX += step;
 			stepY = y;
 			int spos = GetPos(stepX, stepY) * 4;
-			data[ spos ] = 0xFF;
-			data[ spos + 1 ] = 0xFF;	//g
-			data[ spos + 2 ] = 0xFF;	//b
-			data[ spos + 3 ] = 0xFF;	//a
+			if (spos > 0 && spos < texw * texh * 4 -3)
+			{
+				if (spos < texw * texh * 4 -3)
+				{
+					data[ spos ] = 0xFF;
+					data[ spos + 1 ] = 0xFF;	//g
+					data[ spos + 2 ] = 0xFF;	//b
+					data[ spos + 3 ] = 0xFF;	//a
+				}
+			}
 		}
 	}else{
 		//这里是沿着x坐标画线
@@ -83,10 +90,13 @@ void c3dTexture::DrawLine(vec2& p1,vec2& p2)
 			stepY += step;
 			stepX = x;
 			int spos = GetPos(stepX, stepY) * 4;
-			data[ spos ] = 0xFF;
-			data[ spos + 1 ] = 0xFF;	//g
-			data[ spos + 2 ] = 0xFF;	//b
-			data[ spos + 3 ] = 0xFF;	//a
+			if (spos > 0 && spos < texw * texh * 4 -3)
+			{
+				data[ spos ] = 0xFF;
+				data[ spos + 1 ] = 0xFF;	//g
+				data[ spos + 2 ] = 0xFF;	//b
+				data[ spos + 3 ] = 0xFF;	//a
+			}
 		}
 
 	}
@@ -125,6 +135,12 @@ int c3dTexture::GetPos(vec2 pos)
 
 int c3dTexture::GetPos(int x,int y)
 {
+	if (x < 0 || y < 0)
+	{
+		//获取的位置有越界
+		//assert(x < 0);
+		return 0;
+	}
 	if (y < 1)
 	{
 		return x;
@@ -143,4 +159,9 @@ void c3dTexture::DrawDebug(vec2& p1,vec2&p2)
 #endif // _DEBUG
 
 
+}
+
+void c3dTexture::Clear()
+{
+	memset(data,0,4 * texw * texh * sizeof(unsigned char));
 }
