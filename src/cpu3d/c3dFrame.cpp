@@ -8,12 +8,9 @@ static LRESULT screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 		break;
 	case  WM_KEYDOWN:
 		c3dFrame::GetInstance().c3dKeyPressed(wParam);
-		// cout<<"key"<<endl;
-		// MessageBox(NULL, _T("hello"),_T("警告:"),MB_OK);
 		break;
 	case WM_LBUTTONDOWN:
 		c3dFrame::GetInstance().c3dMouseDown(0,0,0);
-		//	MessageBox(NULL, _T("hello"),_T("警告:"),MB_OK);
 		break;
 	case WM_LBUTTONUP:
 		c3dFrame::GetInstance().c3dMouseUp(0,0,0);
@@ -21,34 +18,29 @@ static LRESULT screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case  WM_MOUSEMOVE:
 		c3dFrame::GetInstance().c3dMouseMove(0, 0, 0);
 		break;
+	case WM_PAINT:
+		c3dFrame::GetInstance().c3dDraw();
+		c3dFrame::GetInstance().c3dUpdate();
+		break;
 	case WM_CLOSE:
-		//	MessageBox(NULL, _T("close"),_T("close:"),MB_OK);
 		DestroyWindow(hWnd);
 		break;
-		//case WM_PAINT:
-		//	c3dFrame::GetInstance().c3dUpdate();
-		//	c3dFrame::GetInstance().c3dDraw();
-		//	break;
 	case WM_DESTROY:
 		//	MessageBox(NULL, _T("我要关闭了"),_T("关闭提示:"),MB_OK);
 		break;
 	default: 
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
-
 	return 0;
 }
 
 int c3dFrame::c3dInit()
 {
-	//const int screenw = 1200;
-	//const int screenh = 800;
 	screenw = 1200;
 	screenh = 800;
 	tex.Init(screenw, screenh);
 	TCHAR title[] = _T("c3d frame");
 	cam.ration = screenw / screenh;
-
 
 	WNDCLASS wc = { CS_BYTEALIGNCLIENT, (WNDPROC)screen_events, 0, 0, 0, 
 		NULL, NULL, NULL, NULL, _T("SCREEN3.1415926") };
@@ -92,7 +84,6 @@ int c3dFrame::c3dInit()
 
 	ShowWindow(hwnd, SW_NORMAL);
 	UpdateWindow(hwnd);
-	//dispatch();
 
 	memset(screen_fb, 0,screenw * screenh * 4);
 	vec4 eye = vec4( 0, 0, 2, 1 );
@@ -101,7 +92,7 @@ int c3dFrame::c3dInit()
 	c3dLookAt(mview,eye,at,up);
 	transform = mworld * mview * project;
 	perspective(transform,0,screenw/screenh,0,20);
-	c3dDraw();
+	//c3dDraw();
 	mview = glm::scale(mview,vec3(10, 10, 10));
 	return 0;
 }
@@ -114,7 +105,7 @@ void c3dFrame::c3dUpdate()
 	BitBlt(hDC, 0, 0, screenw, screenh, sHdc, 0, 0, SRCCOPY);
 	ReleaseDC(hwnd, hDC);
 }
-float f = 0;
+float f = 0.005f;
 void c3dFrame::c3dDraw()
 {
 	mview = glm::rotate(mview, f, glm::vec3(0, 0.001, 0.001)); 
@@ -258,25 +249,24 @@ void c3dFrame::close()
 void c3dFrame::dispatch()
 {
 	MSG msg;
-	/*while (1) {
-	if (!PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE)) return;
-	if (!GetMessage(&msg, NULL, 0, 0)) return;
-	TranslateMessage(&msg);
-	DispatchMessage(&msg);
-	}*/
-	while (GetMessage(&msg, NULL, 0, 0))
+
+	while (GetMessage (&msg, NULL, 0, 0))       
+	{       
+		TranslateMessage (&msg) ;       
+		DispatchMessage (&msg) ;    
+		
+	}      
+	/*while (1)
 	{
-		TranslateMessage(&msg);
-		DispatchMessage(&msg);
-		//c3dFrame::GetInstance().c3dUpdate();
+		if (PeekMessage(&msg, NULL, 0, 0, PM_NOREMOVE))
+		{
+			TranslateMessage(&msg);
+			DispatchMessage(&msg);
+		}
 		c3dDraw();
 		c3dUpdate();
-		/*	for (int i = 0; i < screenw * screenh*4; ++i)
-		{
-		screen_fb[i] = i / 255 ;
-		}*/
-		//memset(screen_fb, 100,screenw * screenh * 4);
-	}
+	}*/
+
 }
 
 c3dFrame::c3dFrame()
@@ -352,6 +342,6 @@ void c3dFrame::c3dMouseMove(int button,int x,int y)
 {
 	if (bMouseDown)
 	{
-		f += 0.1f;
+	//	f += 0.000f;
 	}
 }
