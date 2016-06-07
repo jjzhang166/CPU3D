@@ -28,6 +28,9 @@ static LRESULT screen_events(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam)
 	case WM_DESTROY:
 		//	MessageBox(NULL, _T("我要关闭了"),_T("关闭提示:"),MB_OK);
 		break;
+	//case  WM_SIZE:
+	//	AfxMessageBox("")
+	//	break;
 	default: 
 		return DefWindowProc(hWnd, msg, wParam, lParam);
 	}
@@ -100,7 +103,7 @@ int c3dFrame::c3dInit()
 void c3dFrame::c3dUpdate()
 {
 	//transform = mworld * mview * project;
-
+	/*CPaintDC cdc();*/
 	HDC hDC = GetDC(hwnd);
 	BitBlt(hDC, 0, 0, screenw, screenh, sHdc, 0, 0, SRCCOPY);
 	ReleaseDC(hwnd, hDC);
@@ -108,6 +111,7 @@ void c3dFrame::c3dUpdate()
 float f = 0.005f;
 void c3dFrame::c3dDraw()
 {
+	tex.Clear();
 	mview = glm::rotate(mview, f, glm::vec3(0, 0.001, 0.001)); 
 	transform = mworld * mview * project;
 	for (int i = 0; i < 8; ++i)
@@ -140,9 +144,6 @@ void c3dFrame::c3dDraw()
 	unsigned char * data = tex.GetData();
 	int size = tex.GetSize();
 	memcpy(screen_fb,data, size * 4 * sizeof(unsigned char));
-
-
-	tex.Clear();
 }
 
 void c3dFrame::c3dKeyPressed(int key)
