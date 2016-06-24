@@ -66,8 +66,8 @@ void c3dTexture::DrawLine(vec2& p1,vec2& p2)
 				if (spos < texw * texh * 4 -3)
 				{
 					data[ spos ] = 0xFF;
-					data[ spos + 1 ] = 0xFF;	//g
-					data[ spos + 2 ] = 0xFF;	//b
+					data[ spos + 1 ] = 0x00;	//g
+					data[ spos + 2 ] = 0x00;	//b
 					data[ spos + 3 ] = 0xFF;	//a
 				}
 			}

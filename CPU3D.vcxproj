@@ -21,21 +21,23 @@
   <ItemGroup>
     <ClCompile Include="src\cpu3d\c3dApp.cpp" />
     <ClCompile Include="src\cpu3d\c3dCameara.cpp" />
-    <ClCompile Include="src\cpu3d\c3dFrame.cpp" />
+    <ClCompile Include="src\cpu3d\c3dExFrame.cpp" />
     <ClCompile Include="src\cpu3d\c3dRender.cpp" />
     <ClCompile Include="src\cpu3d\c3dTexture.cpp" />
+    <ClCompile Include="src\cpu3d\c3dWin32Frame.cpp" />
     <ClCompile Include="src\glmTest.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cpu3d\c3d.h" />
     <ClInclude Include="src\cpu3d\c3dApp.h" />
     <ClInclude Include="src\cpu3d\c3dCameara.h" />
-    <ClInclude Include="src\cpu3d\c3dFrame.h" />
+    <ClInclude Include="src\cpu3d\c3dExFrame.h" />
     <ClInclude Include="src\cpu3d\c3dLog.h" />
     <ClInclude Include="src\cpu3d\c3dRender.h" />
     <ClInclude Include="src\cpu3d\c3dShapes.h" />
     <ClInclude Include="src\cpu3d\c3dTexture.h" />
     <ClInclude Include="src\cpu3d\c3dVertex.h" />
+    <ClInclude Include="src\cpu3d\c3dWin32Frame.h" />
     <ClInclude Include="src\cpu3d\IRender.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
