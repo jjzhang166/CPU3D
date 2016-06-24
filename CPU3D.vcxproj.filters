@@ -29,6 +29,9 @@
     <ClCompile Include="src\cpu3d\c3dTexture.cpp">
       <Filter>CPU3D</Filter>
     </ClCompile>
+    <ClCompile Include="src\cpu3d\c3dApp.cpp">
+      <Filter>CPU3D</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\cpu3d\c3dFrame.h">
@@ -50,5 +53,14 @@
       <Filter>CPU3D</Filter>
     </ClInclude>
     <ClInclude Include="src\cpu3d\c3dLog.h" />
+    <ClInclude Include="src\cpu3d\c3dApp.h">
+      <Filter>CPU3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu3d\c3dShapes.h">
+      <Filter>CPU3D</Filter>
+    </ClInclude>
+    <ClInclude Include="src\cpu3d\c3dVertex.h">
+      <Filter>CPU3D</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
